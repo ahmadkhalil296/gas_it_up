@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           '/sign_up': (context) => SignUp(),
           '/home': (context) => HomePage(),
           '/fuel_delivery': (context) => FuelDelivery(),
-          'car_wash' : (context) => CarWash()
+          '/car_wash' : (context) => CarWash()
         },
         theme: ThemeData(
           textTheme: const TextTheme(

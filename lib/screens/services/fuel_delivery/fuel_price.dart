@@ -118,7 +118,8 @@ class _FuelPriceState extends State<FuelPrice> {
                           'Fuel Type' : this.widget.fuelType,
                           'Quantity' : quantity.toString() + ' Liters',
                           'Total' : totalPrice,
-                          'user_id': await AuthService.getCurrentUserId()!
+                          'user_id': await AuthService.getCurrentUserId()!,
+                          'created_at' : DateTime.now().toString()
 
                         });
                         if(success){
