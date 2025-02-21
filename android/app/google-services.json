@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "957588106077",
+    "project_id": "mechanicservices-27371",
+    "storage_bucket": "mechanicservices-27371.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957588106077:android:a2ba9ca32e11e85ff7d6b4",
+        "android_client_info": {
+          "package_name": "com.example.mechanic_services"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiObN6bzRmWXGPA4YK2F3sQ6n-MjMGx4M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
