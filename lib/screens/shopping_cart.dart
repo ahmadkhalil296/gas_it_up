@@ -43,6 +43,15 @@ class _ShoppingCartState extends State<ShoppingCart> {
       backgroundColor: Colors.transparent,
       body: Column(
         children: [
+          SizedBox(height: 40),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.shopping_cart,color: Colors.white, size: 30,),
+                SizedBox(width: 20),
+                Text('Car Accessories',style: Theme.of(context).textTheme.headlineLarge)
+              ]
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: cartItems.length,
