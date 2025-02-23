@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:mechanic_services/screens/services/car_accessories.dart';
 import 'package:mechanic_services/screens/services/car_wash.dart';
 import 'package:mechanic_services/screens/services/fuel_delivery/fuel_delivery.dart';
+import 'package:mechanic_services/screens/services/other_services.dart';
+import 'package:mechanic_services/screens/services/tire_change.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:mechanic_services/screens/home.dart';
@@ -36,7 +39,10 @@ class MyApp extends StatelessWidget {
           '/sign_up': (context) => SignUp(),
           '/home': (context) => HomePage(),
           '/fuel_delivery': (context) => FuelDelivery(),
-          '/car_wash' : (context) => CarWash()
+          '/car_wash' : (context) => CarWash(),
+          '/tire_change' : (context) => TireChange(),
+          '/other_services' : (context) => OtherServices(),
+          '/car_accessories' : (context) => CarAccesories(),
         },
         theme: ThemeData(
           textTheme: const TextTheme(

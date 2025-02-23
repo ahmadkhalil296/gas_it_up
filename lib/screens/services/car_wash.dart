@@ -116,7 +116,7 @@ class _CarWashState extends State<CarWash> {
                     CustomNextButton(onPressed: () async{
                       try{
                         if(selectedService == ''){
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('invalid quantity or price'),));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please select a service'),));
                         }else{
                           bool success = await FirebaseService.insertInto('orders',{
                             'Service' : 'Car Wash',

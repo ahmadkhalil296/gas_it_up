@@ -138,32 +138,47 @@ class HomePage extends StatelessWidget {
         ),
 
             const SizedBox(height: 20),
-            const Row(
+             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
         
-                  ServiceCard(
-                    imageUrl: "assets/images/tire_change.png",
-                    title: "Tire Change",
-                    description: "Swift tire services wherever you are.",
+                  GestureDetector(
+                    onTap: (){
+      Navigator.pushNamed(context,'/tire_change');
+      },
+                    child: const ServiceCard(
+                      imageUrl: "assets/images/tire_change.png",
+                      title: "Tire Change",
+                      description: "Swift tire services wherever you are.",
+                    ),
                   ),
         
-                  ServiceCard(
-                    imageUrl: "assets/images/other_services_icon.png",
-                    title: "Other Services",
-                    description: "Discover more services to keep your car in top shape.",
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.pushNamed(context,'/other_services');
+                    },
+                    child: ServiceCard(
+                      imageUrl: "assets/images/other_services_icon.png",
+                      title: "Other Services",
+                      description: "Discover more services to keep your car in top shape.",
+                    ),
                   ),
                 ]
             ),
             const SizedBox(height: 20),
-            const Row(
+             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
         
-                  ServiceCard(
-                    imageUrl: "assets/images/car_accessories_icon.png",
-                    title: "Car Accessories",
-                    description: "Essential upgrades for your car",
+                  GestureDetector(
+                    onTap: (){
+      Navigator.pushNamed(context,'/car_accessories');
+      },
+                    child: ServiceCard(
+                      imageUrl: "assets/images/car_accessories_icon.png",
+                      title: "Car Accessories",
+                      description: "Essential upgrades for your car",
+                    ),
                   ),
         
                   ServiceCard(
