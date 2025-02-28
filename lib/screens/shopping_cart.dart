@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:mechanic_services/screens/order/get_address.dart';
+
+import '../services/local_storage_service.dart';
 import '../widgets/back_button.dart';
 import '../widgets/next_button.dart';
 
@@ -91,13 +95,8 @@ class _ShoppingCartState extends State<ShoppingCart> {
                 children: [
                   CustomBackButton(),
                   CustomNextButton(onPressed: () async{
-                    try{
-
-                    }catch(e){
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('invalid quantity or price'),));
-
-                    }
-
+                   await LocalStorageService().save('order',jsonEncode(cartItems));
+                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => GetAddress()));
                   })
 
                 ]
