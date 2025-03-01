@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mechanic_services/screens/menu/orders_screen.dart';
+import 'package:mechanic_services/screens/menu/profile_screen.dart';
+import 'package:mechanic_services/screens/menu/vehicule_details.dart';
 
+import '../services/AuthService.dart';
 import '../widgets/service_card.dart';
 
 class HomePage extends StatelessWidget {
@@ -22,31 +26,17 @@ class HomePage extends StatelessWidget {
         ),
       ),
       drawer: Drawer(
+
         child: ListView(
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.only(top: 50),
           children: [
-            // DrawerHeader(
-            //   decoration: BoxDecoration(color: Colors.white),
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: [
-            //       CircleAvatar(
-            //         radius: 30,
-            //         backgroundColor: Colors.white,
-            //         child: Icon(Icons.person, size: 40, color: Colors.blue),
-            //       ),
-            //       SizedBox(height: 10),
-            //       Text("User Name", style: TextStyle(color: Colors.white, fontSize: 18)),
-            //       Text("user@example.com", style: TextStyle(color: Colors.white70, fontSize: 14)),
-            //     ],
-            //   ),
-            // ),
+
             ListTile(
               leading: Icon(Icons.person),
               title: Text("My Account"),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserProfileScreen()));
               },
             ),
             ListTile(
@@ -54,6 +44,8 @@ class HomePage extends StatelessWidget {
               title: Text("My Car"),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => VehicleInfoScreen()));
+
               },
             ),
             ListTile(
@@ -61,6 +53,8 @@ class HomePage extends StatelessWidget {
               title: Text("Order History"),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => OrdersScreen()));
+
               },
             ),
             ListTile(
@@ -80,8 +74,9 @@ class HomePage extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.logout),
               title: Text("Logout"),
-              onTap: () {
-                Navigator.pop(context);
+              onTap: () async {
+                await AuthService().signOut();
+                Navigator.popUntil(context, ModalRoute.withName('/login'));
               },
             ),
           ],
