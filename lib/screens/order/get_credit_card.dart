@@ -23,6 +23,21 @@ class _GetCreditCardState extends State<GetCreditCard> {
   String? _errorText;
   final _formKey = GlobalKey<FormState>();
 
+
+
+  void _validateDate() {
+    if (_selectedDate != null) {
+      if (_selectedDate!.isBefore(DateTime.now())) {
+        setState(() {
+          _errorText = 'Expiry date cannot be in the past';
+        });
+      } else {
+        setState(() {
+          _errorText = null;
+        });
+      }
+    }
+  }
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked= await showDatePicker(
       context: context,
@@ -40,23 +55,9 @@ class _GetCreditCardState extends State<GetCreditCard> {
       });
     }
   }
-
-  void _validateDate() {
-    if (_selectedDate != null) {
-      if (_selectedDate!.isBefore(DateTime.now())) {
-        setState(() {
-          _errorText = 'Expiry date cannot be in the past';
-        });
-      } else {
-        setState(() {
-          _errorText = null;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
@@ -72,10 +73,10 @@ class _GetCreditCardState extends State<GetCreditCard> {
                   children: [
                     Icon(Icons.payment,color: Colors.white, size: 30,),
                     SizedBox(width: 20),
-                    Text('Credit Card Information',style: Theme.of(context).textTheme.headlineLarge)
+                    Text('Credit Card',style: Theme.of(context).textTheme.headlineLarge,)
                   ]
               ),
-          
+
               Column(
                 children: [
                   InputField(
@@ -92,42 +93,48 @@ class _GetCreditCardState extends State<GetCreditCard> {
                     controller: cardNumberController,
                       hintText: 'card number'
                   ),
-                  SizedBox(width: 20),
-                  GestureDetector(
-                    onTap: (){
-                      _selectDate(context);
+                  SizedBox(height: 20),
+
+                  InkWell(
+                    onTap: () async{
+                     await _selectDate(context);
                     },
                     child: InputField(
 
                         readOnly: true,
                         controller: expirationDateController,
                         hintText: 'expiration date'
-                    ),
+                        ),
+                        ),
+                        SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => _selectDate(context),
+                    child: Text("Pick a Date"),
                   ),
-                  SizedBox(width: 20),
-                  InputField(
-                      validator: (value){
+                  SizedBox(height: 20),
+                        InputField(
+                        validator: (value){
                         if(value == null || value == ''){
-                          return 'secret code cannot be empty';
+                        return 'secret code cannot be empty';
                         }
 
-                      },
-                    controller: secretCodeController,
-                      hintText: 'secret code'
-                  ),
-                ]
-              ),
-          
-          
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CustomBackButton(),
-                    CustomNextButton(onPressed: () async{
-                      if(_formKey.currentState!.validate()){
+                        },
+                        controller: secretCodeController,
+                        hintText: 'secret code'
+                        ),
+                        ]
+                        ),
+
+
+                        Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                        CustomBackButton(),
+                        CustomNextButton(onPressed: () async{
+                        if(_formKey.currentState!.validate()){
                         if(_selectedDate == null){
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please enter expiry date'),));
-                          return;
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please enter expiry date'),));
+                        return;
                         }
                         LocalStorageService _service = LocalStorageService();
                         String orderJsonString = await _service.get('order');
@@ -139,39 +146,41 @@ class _GetCreditCardState extends State<GetCreditCard> {
                         String cardNumber = cardNumberController.text.trim();
 
                         bool success = await FirebaseService.insertInto('orders',{
-                          'Service' : 'Car Accessories',
-                          'order' :orderJsonString,
-                          'city' : city,
-                          'street' : street,
-                          'payment_method' : paymentMethod,
-                          'expiry_date' : _selectedDate.toString(),
-                          'secret_code' : secretCode,
-                          'card_number' : cardNumber,
+                        'Service' : 'Car Accessories',
+                        'order' :orderJsonString,
+                        'city' : city,
+                        'street' : street,
+                        'payment_method' : paymentMethod,
+                        'expiry_date' : _selectedDate.toString(),
+                        'secret_code' : secretCode,
+                        'card_number' : cardNumber,
 
-                          'user_id': await AuthService.getCurrentUserId()!,
-                          'created_at' : DateTime.now().toString()
+                        'user_id': await AuthService.getCurrentUserId()!,
+                        'created_at' : DateTime.now().toString()
 
                         });
                         if(success){
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('order submitted successfully'),));
-                          Navigator.popUntil(context, ModalRoute.withName('/home'));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('order submitted successfully'),));
+                        Navigator.popUntil(context, ModalRoute.withName('/home'));
 
                         }else{
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('could not submit the order at the moment'),));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('could not submit the order at the moment'),));
 
                         }
-                      }
-                      // if(paymentMethod == ''){
-                      //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('select a payment method'));
-                      //       return;
-                      //   }
-                      //
-                      //       await LocalStorageService().save('payment_method',paymentMethod);
-                      //
-                      //   Navigator.of(context).push(MaterialPageRoute(builder: (context) => GetCredit()));
-                      })
+                        }
+                        // if(paymentMethod == ''){
+                        //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('select a payment method'));
+                        //       return;
+                        //   }
+                        //
+                        //       await LocalStorageService().save('payment_method',paymentMethod);
+                        //
+                        //   Navigator.of(context).push(MaterialPageRoute(builder: (context) => GetCredit()));
+                        }
+    )
           
                   ]
+
               ),
             ],
           ),

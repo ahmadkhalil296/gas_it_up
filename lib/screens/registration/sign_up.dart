@@ -54,112 +54,114 @@ class _SignUpState extends State<SignUp> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         margin: EdgeInsets.symmetric(horizontal: 25),
-        child: Form(
-          key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+        child: SingleChildScrollView(
+          child:  Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
 
-                Container(
-                  margin: EdgeInsets.only(bottom: 40),
-                  child: Row(
+                  Container(
+                    margin: EdgeInsets.only(bottom: 40),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                            width: 50,
+                            child: Image(image: AssetImage('assets/images/arrow2.png'))),
+                        SizedBox(width: 20,),
+                        Text("SIGNUP",style: Theme.of(context).textTheme.headlineLarge,)
+                      ],
+                    ),
+                  ),
+
+                  InputField(
+                    validator: validateNotEmpty,
+                    controller: firstNameController,
+                    hintText: 'First Name',
+                  ),
+
+                  SizedBox(height: 20),
+
+                  InputField(
+                    validator: validateNotEmpty,
+                    controller: familyNameController,
+                    hintText: 'Family Name',
+                  ),
+                  SizedBox(height: 20),
+                  InputField(
+                    validator: validateNotEmpty,
+                    controller: usernameController,
+                    hintText: 'username',
+                  ),
+                  SizedBox(height: 20),
+                  InputField(
+                    validator: validateEmail,
+                    controller: emailController,
+                    hintText: 'E-mail',
+                  ),
+                  SizedBox(height: 20),
+                  InputField(
+                    validator: validatePhone,
+                    controller: phoneController,
+                    hintText: 'phone number',
+                  ),
+                  SizedBox(height: 20),
+                  InputField(
+                    validator: validatePassword,
+                    controller: passwordController,
+                    inputType: TextInputType.text, // Password input
+                    obscureText: true, // Hides input
+                    hintText: 'Password',
+                  ),
+                  SizedBox(height: 20),
+                  InputField(
+                    validator: validatePassword,
+                    controller: confirmPasswordController,
+                    inputType: TextInputType.text, // Password input
+                    obscureText: true, // Hides input
+                    hintText: 'Confirm Password',
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 20,left: 30,right: 30),
+                    width: MediaQuery.of(context).size.width,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if(_formKey.currentState!.validate()){
+                          userModel = UserModel(
+                              firstName: firstNameController.text.trim(),
+                              familyName: familyNameController.text.trim(),
+                              username: usernameController.text.trim(),
+                              email: emailController.text.trim(),
+                              phoneNumber: phoneController.text.trim(),
+                              password: passwordController.text.trim(),
+                              vehicleInfo: VehicleInfo.defaultConst());
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => VehiculeInfo(userModel: userModel)));
+
+                        }
+                      },
+                      child: Text("Vehicle\'s Info",style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                          width: 50,
-                          child: Image(image: AssetImage('assets/images/arrow2.png'))),
-                      SizedBox(width: 20,),
-                      Text("SIGNUP",style: Theme.of(context).textTheme.headlineLarge,)
+                      Text("Already Have an Account?",style: Theme.of(context).textTheme.bodyMedium),
+                      SizedBox(width: 10,),
+                      Expanded(
+
+                        child: ElevatedButton(onPressed: (){
+                          Navigator.pushNamed(context, '/login');
+                        },
+                            child: Text('Login',style: TextStyle(fontWeight: FontWeight.bold))),
+                      )
                     ],
-                  ),
-                ),
-
-                InputField(
-                  validator: validateNotEmpty,
-                  controller: firstNameController,
-                  hintText: 'First Name',
-                ),
-
-                SizedBox(height: 20),
-
-                InputField(
-                  validator: validateNotEmpty,
-                  controller: familyNameController,
-                  hintText: 'Family Name',
-                ),
-                SizedBox(height: 20),
-                InputField(
-                  validator: validateNotEmpty,
-                  controller: usernameController,
-                  hintText: 'username',
-                ),
-                SizedBox(height: 20),
-                InputField(
-                  validator: validateEmail,
-                  controller: emailController,
-                  hintText: 'E-mail',
-                ),
-                SizedBox(height: 20),
-                InputField(
-                  validator: validatePhone,
-                  controller: phoneController,
-                  hintText: 'phone number',
-                ),
-                SizedBox(height: 20),
-                InputField(
-                  validator: validatePassword,
-                  controller: passwordController,
-                  inputType: TextInputType.text, // Password input
-                  obscureText: true, // Hides input
-                  hintText: 'Password',
-                ),
-                SizedBox(height: 20),
-                InputField(
-                  validator: validatePassword,
-                  controller: confirmPasswordController,
-                  inputType: TextInputType.text, // Password input
-                  obscureText: true, // Hides input
-                  hintText: 'Confirm Password',
-                ),
-                SizedBox(height: 20),
-                Container(
-                  margin: EdgeInsets.only(bottom: 20,left: 30,right: 30),
-                  width: MediaQuery.of(context).size.width,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if(_formKey.currentState!.validate()){
-                        userModel = UserModel(
-                            firstName: firstNameController.text.trim(),
-                            familyName: familyNameController.text.trim(),
-                            username: usernameController.text.trim(),
-                            email: emailController.text.trim(),
-                            phoneNumber: phoneController.text.trim(),
-                            password: passwordController.text.trim(),
-                            vehicleInfo: VehicleInfo.defaultConst());
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => VehiculeInfo(userModel: userModel)));
-
-                      }
-                      },
-                    child: Text("Vehicle\'s Info",style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Already Have an Account?",style: Theme.of(context).textTheme.bodyMedium),
-                    SizedBox(width: 10,),
-                    Expanded(
-
-                      child: ElevatedButton(onPressed: (){
-                        Navigator.pushNamed(context, '/login');
-                      },
-                          child: Text('Login',style: TextStyle(fontWeight: FontWeight.bold))),
-                    )
-                  ],
-                )
-              ],
-            )
+                  )
+                ],
+              )
+          )
         ),
       ),
     );

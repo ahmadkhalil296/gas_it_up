@@ -14,7 +14,7 @@ class InputField extends StatelessWidget {
   const InputField({
     Key? key,
     required this.hintText,
-     this.icon,
+    this.icon,
     this.backgroundColor = const Color.fromRGBO(8, 174, 234, 1), // Default color
     this.controller,
     this.inputType = TextInputType.text, // Default input type
@@ -44,10 +44,10 @@ class InputField extends StatelessWidget {
               controller: controller,
               validator: validator,
               onChanged: (value) {
-    if (onChanged != null) {
-    onChanged!(value); // Call the passed function
-    }
-    },
+                if (onChanged != null) {
+                  onChanged!(value); // Call the passed function
+                }
+              },
               decoration: InputDecoration(
                 hintText: hintText,
 
