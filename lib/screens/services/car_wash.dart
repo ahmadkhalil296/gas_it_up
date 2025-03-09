@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mechanic_services/widgets/bullet_list.dart';
 
 import '../../services/AuthService.dart';
 import '../../services/firebase_service.dart';
@@ -25,6 +27,21 @@ class _CarWashState extends State<CarWash> {
   
   String selectedService = '';
   int price = 0;
+
+  var exteriorWashDescription = [
+    'Washing and scrubbing the body, windows and mirrors',
+    'cleaning tires, rims, and wheel wells'
+  ];
+  var interiorWashDescription = [
+    'Vacuuming carpets, seats, and trunk. Wiping down dashboards, consoles, and door panels.  ',
+    'Cleaning and conditioning leather or fabric seats.',
+    'Removing stains and odors.'
+
+  ];
+  var fullWashDescription = [
+    'All services in the outer wash and inner wash categories. ',
+    'Additional detailing like waxing, tire polishing, and interior deodorizing.'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -56,55 +73,73 @@ class _CarWashState extends State<CarWash> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  GestureDetector(
-                    onTap: (){
-      setState(() {
-        isExteriorSelected = !isExteriorSelected;
-        isInteriorSelected = false;
-        isFullSelected = false;
-        selectedService =isExteriorSelected ? 'Exterior Wash' : '';
-        price = 4;
-      });               
-    },
-                    child: SelectableField(
-                        isSelected: isExteriorSelected,
-                        text1: 'Exterior Wash',
-                        text2: '4\$'
-                    ),
+                  Column(
+                    children: [
+                      GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            isExteriorSelected = !isExteriorSelected;
+                            isInteriorSelected = false;
+                            isFullSelected = false;
+                            selectedService =isExteriorSelected ? 'Exterior Wash' : '';
+                            price = 4;
+                          });
+                        },
+                        child: SelectableField(
+                            isSelected: isExteriorSelected,
+                            text1: 'Exterior Wash',
+                            text2: '4\$'
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      Visibility(visible: isExteriorSelected , child: BulletList(exteriorWashDescription))
+                    ],
                   ),
 
-                  GestureDetector(
-                    onTap: (){
-                      setState(() {
-                        isInteriorSelected = !isInteriorSelected;
-                        isExteriorSelected = false;
-                        isFullSelected = false;
-                        selectedService =isInteriorSelected ? 'Interior Wash' : '';
-                        price = 3;
-                      });
-                    },
-                    child: SelectableField(
-                        isSelected: isInteriorSelected,
-                        text1: 'Interior Wash',
-                        text2: '3\$'
-                    ),
+                  Column(
+                    children: [
+                      GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            isInteriorSelected = !isInteriorSelected;
+                            isExteriorSelected = false;
+                            isFullSelected = false;
+                            selectedService =isInteriorSelected ? 'Interior Wash' : '';
+                            price = 3;
+                          });
+                        },
+                        child: SelectableField(
+                            isSelected: isInteriorSelected,
+                            text1: 'Interior Wash',
+                            text2: '3\$'
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      Visibility(visible: isInteriorSelected ,child: BulletList(interiorWashDescription))
+                    ],
                   ),
 
-                  GestureDetector(
-                    onTap: (){
-                      setState(() {
-                        isFullSelected = !isFullSelected;
-                        isExteriorSelected = false;
-                        isInteriorSelected = false;
-                        selectedService =isFullSelected ? 'Full Wash' : '';
-                        price = 6;
-                      });
-                    },
-                    child: SelectableField(
-                        isSelected: isFullSelected,
-                        text1: 'Full Wash',
-                        text2: '6\$'
-                    ),
+                  Column(
+                    children: [
+                      GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            isFullSelected = !isFullSelected;
+                            isExteriorSelected = false;
+                            isInteriorSelected = false;
+                            selectedService =isFullSelected ? 'Full Wash' : '';
+                            price = 6;
+                          });
+                        },
+                        child: SelectableField(
+                            isSelected: isFullSelected,
+                            text1: 'Full Wash',
+                            text2: '6\$'
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      Visibility(visible: isFullSelected,child: BulletList(fullWashDescription))
+                    ],
                   ),
                 ]
               ),
