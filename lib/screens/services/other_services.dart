@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mechanic_services/widgets/selectable_field.dart';
 
 import '../../services/AuthService.dart';
 import '../../services/firebase_service.dart';
+import '../../services/local_storage_service.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/next_button.dart';
+import '../order/get_address.dart';
 
 class OtherServices extends StatefulWidget {
   const OtherServices({super.key});
@@ -141,23 +145,18 @@ class _OtherServicesState extends State<OtherServices> {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please select a service'),));
                         }else{
 
-
-                          bool success = await FirebaseService.insertInto('orders',{
+                          Map<String,dynamic> order = {
                             'Service' : 'Other Services',
                             'type' :selectedService,
                             'price': price,
                             'user_id': await AuthService.getCurrentUserId()!,
                             'created_at' : DateTime.now().toString()
 
-                          });
-                          if(success){
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('order submitted successfully'),));
-                            Navigator.popUntil(context, ModalRoute.withName('/home'));
+                          };
+                          await LocalStorageService().save('order',jsonEncode(order));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => GetAddress()));
 
-                          }else{
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('could not submit the order at the moment'),));
 
-                          }
                         }
                       }catch(e){
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('could not submit the order at the moment'),));

@@ -6,9 +6,11 @@ import 'package:flutter/widgets.dart';
 
 import '../../services/AuthService.dart';
 import '../../services/firebase_service.dart';
+import '../../services/local_storage_service.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/next_button.dart';
 import '../../widgets/selectable_field.dart';
+import '../order/get_address.dart';
 
 class TireChange extends StatefulWidget {
   const TireChange({super.key});
@@ -225,7 +227,8 @@ class _TireChangeState extends State<TireChange> {
                           }
                           String key = selectedService == 'Tire Change' ? 'tire' : 'price';
                           String value = selectedService == 'Tire Change' ? jsonEncode(tires.elementAt(selectedIndex!)) : price.toString();
-                          bool success = await FirebaseService.insertInto('orders',{
+
+                          Map<String,dynamic> order = {
                             'Service' : 'Tire Change',
                             'type' :selectedService,
                             key:value,
@@ -233,15 +236,12 @@ class _TireChangeState extends State<TireChange> {
                             'user_id': await AuthService.getCurrentUserId()!,
                             'created_at' : DateTime.now().toString()
 
-                          });
-                          if(success){
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('order submitted successfully'),));
-                            Navigator.popUntil(context, ModalRoute.withName('/home'));
+                          };
+                          await LocalStorageService().save('order',jsonEncode(order));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => GetAddress()));
 
-                          }else{
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('could not submit the order at the moment'),));
 
-                          }
+
                         }
                       }catch(e){
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('invalid quantity or price'),));

@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../../../services/AuthService.dart';
 import '../../../services/firebase_service.dart';
+import '../../../services/local_storage_service.dart';
 import '../../../widgets/back_button.dart';
 import '../../../widgets/input_field.dart';
 import '../../../widgets/next_button.dart';
+import '../../order/get_address.dart';
 
 TextEditingController quantityController = new TextEditingController();
 TextEditingController totalPriceController = new TextEditingController();
@@ -112,7 +116,9 @@ class _FuelPriceState extends State<FuelPrice> {
                       if(totalPrice <= 0 || quantity <= 0){
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('invalid quantity or price'),));
                       }else{
-                        bool success = await FirebaseService.insertInto('orders',{
+
+
+                        Map<String,dynamic> order = {
                           'Service' : 'Fuel Delivery',
                           'Provider' : this.widget.provider,
                           'Fuel Type' : this.widget.fuelType,
@@ -121,15 +127,11 @@ class _FuelPriceState extends State<FuelPrice> {
                           'user_id': await AuthService.getCurrentUserId()!,
                           'created_at' : DateTime.now().toString()
 
-                        });
-                        if(success){
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('order submitted successfully'),));
-                          Navigator.popUntil(context, ModalRoute.withName('/home'));
+                        };
+                        await LocalStorageService().save('order',jsonEncode(order));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => GetAddress()));
 
-                        }else{
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('could not submit the order at the moment'),));
 
-                        }
                       }
                     }catch(e){
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('invalid quantity or price'),));

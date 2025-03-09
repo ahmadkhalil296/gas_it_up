@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../../services/AuthService.dart';
 import '../../services/firebase_service.dart';
+import '../../services/local_storage_service.dart';
 import '../../widgets/back_button.dart';
 import '../../widgets/next_button.dart';
 import '../../widgets/selectable_field.dart';
+import '../order/get_address.dart';
 
 class CarWash extends StatefulWidget {
   const CarWash({super.key});
@@ -118,7 +122,7 @@ class _CarWashState extends State<CarWash> {
                         if(selectedService == ''){
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please select a service'),));
                         }else{
-                          bool success = await FirebaseService.insertInto('orders',{
+                          Map<String,dynamic> order = {
                             'Service' : 'Car Wash',
                             'type' :selectedService,
                             'price' : price,
@@ -126,15 +130,26 @@ class _CarWashState extends State<CarWash> {
                             'user_id': await AuthService.getCurrentUserId()!,
                             'created_at' : DateTime.now().toString()
 
-                          });
-                          if(success){
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('order submitted successfully'),));
-                            Navigator.popUntil(context, ModalRoute.withName('/home'));
-
-                          }else{
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('could not submit the order at the moment'),));
-
-                          }
+                          };
+                          await LocalStorageService().save('order',jsonEncode(order));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => GetAddress()));
+                          // bool success = await FirebaseService.insertInto('orders',{
+                          //   'Service' : 'Car Wash',
+                          //   'type' :selectedService,
+                          //   'price' : price,
+                          //
+                          //   'user_id': await AuthService.getCurrentUserId()!,
+                          //   'created_at' : DateTime.now().toString()
+                          //
+                          // });
+                          // if(success){
+                          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('order submitted successfully'),));
+                          //   Navigator.popUntil(context, ModalRoute.withName('/home'));
+                          //
+                          // }else{
+                          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('could not submit the order at the moment'),));
+                          //
+                          // }
                         }
                       }catch(e){
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('invalid quantity or price'),));
