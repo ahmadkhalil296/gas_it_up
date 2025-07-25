@@ -22,8 +22,8 @@ class _InformativeState extends State<Informative> {
     super.initState();
     _pageController = PageController(initialPage: _currentIndex);
 
-    // Automatically switch tabs every 3 seconds
-    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+    // Automatically switch tabs every 5 seconds
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
       setState(() {
         _currentIndex = (_currentIndex + 1) % 3;
         _pageController.animateToPage(
@@ -69,7 +69,7 @@ class _InformativeState extends State<Informative> {
                 InformativeOne(),
                 InformativeTwo(),
                 InformativeThree(),
-                ],
+              ],
             ),
           ),
 
@@ -87,7 +87,8 @@ class _InformativeState extends State<Informative> {
                     width: _currentIndex == index ? 40 : 20,
                     height: 10,
                     decoration: BoxDecoration(
-                      color: _currentIndex == index ? Colors.white : Colors.grey,
+                      color:
+                          _currentIndex == index ? Colors.white : Colors.grey,
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
@@ -97,7 +98,6 @@ class _InformativeState extends State<Informative> {
           ),
         ],
       ),
-
     );
   }
 }

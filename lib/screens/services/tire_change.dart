@@ -20,14 +20,12 @@ class TireChange extends StatefulWidget {
 }
 
 class _TireChangeState extends State<TireChange> {
-
   bool isTireInflation = false;
   bool isTireRepair = false;
   bool isTireChange = false;
 
   String selectedService = '';
   int price = 0;
-
 
   final List<Map<String, String>> tires = [
     {"size": "225/40/17", "price": "40\$"},
@@ -58,7 +56,6 @@ class _TireChangeState extends State<TireChange> {
 
   int? selectedIndex;
 
-
   @override
   Widget build(BuildContext context) {
     List<List<Map<String, String>>> rows = [];
@@ -68,195 +65,225 @@ class _TireChangeState extends State<TireChange> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        width: MediaQuery.of(context).size.width,
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
+          width: MediaQuery.of(context).size.width,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 0),
+                child: Row(children: [
                   Image(image: AssetImage('assets/images/tire.png')),
                   SizedBox(width: 20),
-                  Text('Tire Change',style: Theme.of(context).textTheme.headlineLarge)
-                ]
-            ),
-
-            Column(
-              children: [
-                GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      isTireInflation = !isTireInflation;
-                      isTireRepair = false;
-                      isTireChange = false;
-                      selectedService = isTireInflation ? 'Tire Inflation' : '';
-                      price = 2;
-                    });
-      },
-                  child: SelectableField(
-                      isSelected: isTireInflation,
-                      text1: 'Tire Inflation',
-                      text2: '2\$'
+                  Text('Tire Change',
+                      style: Theme.of(context).textTheme.headlineLarge)
+                ]),
+              ),
+              Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isTireInflation = !isTireInflation;
+                        isTireRepair = false;
+                        isTireChange = false;
+                        selectedService =
+                            isTireInflation ? 'Tire Inflation' : '';
+                        price = 2;
+                      });
+                    },
+                    child: SelectableField(
+                        isSelected: isTireInflation,
+                        text1: 'Tire Inflation',
+                        text2: '2\$'),
                   ),
-                ),
-                SizedBox(height: 20,),
-
-                GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      isTireRepair = !isTireRepair;
-                      isTireInflation = false;
-                      isTireChange = false;
-                      selectedService = isTireRepair ? 'Tire Repair' : '';
-                      price = 3;
-                    });
-                  },
-                  child: SelectableField(
-                      isSelected: isTireRepair,
-                      text1: 'Tire Repair',
-                      text2: '3\$'
+                  SizedBox(
+                    height: 20,
                   ),
-                ),
-                SizedBox(height: 20,),
-
-                GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      isTireChange = !isTireChange;
-                      isTireInflation = false;
-                      isTireRepair = false;
-                      selectedService = isTireChange ? 'Tire Change' : '';
-                      price = 3;
-                    });
-                  },
-                  child: SelectableField(
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isTireRepair = !isTireRepair;
+                        isTireInflation = false;
+                        isTireChange = false;
+                        selectedService = isTireRepair ? 'Tire Repair' : '';
+                        price = 3;
+                      });
+                    },
+                    child: SelectableField(
+                        isSelected: isTireRepair,
+                        text1: 'Tire Repair',
+                        text2: '3\$'),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isTireChange = !isTireChange;
+                        isTireInflation = false;
+                        isTireRepair = false;
+                        selectedService = isTireChange ? 'Tire Change' : '';
+                        price = 3;
+                      });
+                    },
+                    child: SelectableField(
                       isSelected: isTireChange,
                       text1: 'Tire Change',
-
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+              Center(
+                child: Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(8, 174, 234, 0.54),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Column(
+                      children: rows.map((row) {
+                        return Row(
+                          children: row.asMap().entries.map((entry) {
+                            int index = tires
+                                .indexOf(entry.value); // Get index globally
+                            bool isSelected = selectedIndex == index;
 
-
-            Center(
-              child: Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(8, 174, 234, 0.54),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Column(
-                    children: rows.map((row) {
-                      return Row(
-                        children: row.asMap().entries.map((entry) {
-                          int index = tires.indexOf(entry.value); // Get index globally
-                          bool isSelected = selectedIndex == index;
-
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedIndex = (selectedIndex == index) ? null : index;
-
-                              });
-                            },
-                            child: Container(
-                              width: 130,
-                              height: 90,
-                              margin: index % 8 == 0 ? EdgeInsets.only(right: 10) : EdgeInsets.all(10),
-                              padding: EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: isSelected ? Colors.blue : Colors.white,
-                                borderRadius: BorderRadius.circular(50),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black26,
-                                    blurRadius: 4,
-                                    spreadRadius: 1,
-                                  )
-                                ],
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    entry.value["size"]!,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: isSelected ? Colors.white : Colors.black,
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedIndex =
+                                      (selectedIndex == index) ? null : index;
+                                });
+                              },
+                              child: Container(
+                                width: 130,
+                                height: 90,
+                                margin: index % 8 == 0
+                                    ? EdgeInsets.only(right: 10)
+                                    : EdgeInsets.all(10),
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color:
+                                      isSelected ? Colors.blue : Colors.white,
+                                  borderRadius: BorderRadius.circular(50),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 4,
+                                      spreadRadius: 1,
+                                    )
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      entry.value["size"]!,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: isSelected
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    entry.value["price"]!,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: isSelected ? Colors.white : Colors.black,
+                                    SizedBox(height: 5),
+                                    Text(
+                                      entry.value["price"]!,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: isSelected
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        }).toList(),
-                      );
-                    }).toList(),
+                            );
+                          }).toList(),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
               ),
-            ),
+              Container(
+                margin: EdgeInsets.only(top: 20),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CustomBackButton(),
+                      CustomNextButton(onPressed: () async {
+                        try {
+                          if (selectedService == '') {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                'please select a service',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              backgroundColor: Color.fromRGBO(16, 56, 127, 1.0),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ));
+                          } else {
+                            if (selectedService == 'Tire Change' &&
+                                selectedIndex == null) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text(
+                                  'please select a tire type',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                backgroundColor: Color.fromRGBO(16, 56, 127, 1.0),
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ));
+                              return;
+                            }
+                            String key = selectedService == 'Tire Change'
+                                ? 'tire'
+                                : 'price';
+                            String value = selectedService == 'Tire Change'
+                                ? jsonEncode(tires.elementAt(selectedIndex!))
+                                : price.toString();
 
-
-            Container(
-              margin: EdgeInsets.only(top: 20),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CustomBackButton(),
-                    CustomNextButton(onPressed: () async{
-                      try{
-                        if(selectedService == ''){
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please select a service'),));
-                        }else{
-                          if(selectedService == 'Tire Change' && selectedIndex == null){
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('please select a tire type'),));
-                            return;
+                            Map<String, dynamic> order = {
+                              'Service': 'Tire Change',
+                              'type': selectedService,
+                              key: value,
+                              'user_id': await AuthService().getCurrentUserId()!,
+                              'created_at': DateTime.now().toString()
+                            };
+                            await LocalStorageService()
+                                .save('order', jsonEncode(order));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => GetAddress()));
                           }
-                          String key = selectedService == 'Tire Change' ? 'tire' : 'price';
-                          String value = selectedService == 'Tire Change' ? jsonEncode(tires.elementAt(selectedIndex!)) : price.toString();
-
-                          Map<String,dynamic> order = {
-                            'Service' : 'Tire Change',
-                            'type' :selectedService,
-                            key:value,
-
-                            'user_id': await AuthService.getCurrentUserId()!,
-                            'created_at' : DateTime.now().toString()
-
-                          };
-                          await LocalStorageService().save('order',jsonEncode(order));
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => GetAddress()));
-
-
-
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('invalid quantity or price'),
+                          ));
                         }
-                      }catch(e){
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('invalid quantity or price'),));
-
-                      }
-
-                    })
-
-                  ]
-              ),
-            )
-
-          ],
-        )
-      ),
+                      })
+                    ]),
+              )
+            ],
+          )),
     );
   }
 }

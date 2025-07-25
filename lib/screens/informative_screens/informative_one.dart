@@ -8,13 +8,20 @@ class InformativeOne extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-
         children: [
           Container(
             margin: const EdgeInsets.only(bottom: 15.0),
             child: Image(image: AssetImage('assets/images/gas_it_up.png')),
           ),
-          Text('Fuel At Your Fingertips',style: Theme.of(context).textTheme.headlineLarge, textAlign: TextAlign.center,)
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 15), // Adjust the value as needed
+            child: Text(
+              'Fuel At Your Fingertips',
+              style: Theme.of(context).textTheme.headlineLarge,
+              textAlign: TextAlign.center,
+            ),
+          )
         ],
       ),
     );

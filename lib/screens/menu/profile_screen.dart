@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mechanic_services/screens/menu/vehicule_details.dart';
+import 'package:mechanic_services/widgets/back_button.dart';
 
 class UserProfileScreen extends StatefulWidget {
   @override
@@ -11,13 +11,14 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
-  bool _isEditing = false;
   bool _isLoading = false;
+  bool _isEditing = false;
 
   // Controllers for user info
   TextEditingController firstNameController = TextEditingController();
-  TextEditingController familyNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
+  TextEditingController idController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
 
@@ -32,13 +33,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     try {
       String uid = _auth.currentUser!.uid;
-      DocumentSnapshot userDoc = await _firestore.collection('users').doc(uid).get();
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
 
       if (userDoc.exists) {
         var data = userDoc.data() as Map<String, dynamic>;
         firstNameController.text = data['firstName'] ?? '';
-        familyNameController.text = data['familyName'] ?? '';
+        lastNameController.text = data['familyName'] ?? '';
         usernameController.text = data['username'] ?? '';
+        idController.text = uid;
         emailController.text = data['email'] ?? '';
         phoneNumberController.text = data['phoneNumber'] ?? '';
       }
@@ -56,8 +59,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       String uid = _auth.currentUser!.uid;
       await _firestore.collection('users').doc(uid).update({
         'firstName': firstNameController.text,
-        'familyName': familyNameController.text,
-        'username': usernameController.text,
+        'familyName': lastNameController.text,
         'email': emailController.text,
         'phoneNumber': phoneNumberController.text,
       });
@@ -76,77 +78,135 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     setState(() => _isLoading = false);
   }
 
+  Widget _buildInfoRow(
+      String type, TextEditingController controller, IconData icon,
+      {bool isEditable = false}) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.cyan,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(12),
+            child: Icon(icon, color: Colors.white, size: 28),
+          ),
+          Expanded(
+            child: TextFormField(
+              controller: controller,
+              style: TextStyle(color: Colors.white, fontSize: 18),
+              enabled: isEditable && _isEditing,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: type,
+                hintStyle: TextStyle(color: Colors.white70),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
-          : Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Container(
-          margin: EdgeInsets.only(top: 30),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 40),
+                  Text(
+                    'Account Info',
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                  SizedBox(height: 20),
+                  Stack(
+                    alignment: Alignment.center,
                     children: [
-                      Icon(Icons.person,color: Colors.white, size: 30,),
-                      SizedBox(width: 20),
-                      Text('Profile Info',style: Theme.of(context).textTheme.headlineLarge)
-                    ]
-                ),
-                _buildTextField('First Name', firstNameController),
-                _buildTextField('Family Name', familyNameController),
-                _buildTextField('Username', usernameController),
-                _buildTextField('Email', emailController, isEmail: true),
-                _buildTextField('Phone Number', phoneNumberController, isPhone: true),
-                SizedBox(height: 20),
-                _isEditing
-                    ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: _saveUserData,
-                      child: Text('Save'),
+                      Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          color: Colors.blue[900],
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.person,
+                          size: 80,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          padding: EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.cyan,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 40),
+                  _buildInfoRow(
+                      'First Name', firstNameController, Icons.person_outline,
+                      isEditable: true),
+                  _buildInfoRow(
+                      'Last Name', lastNameController, Icons.person_outline,
+                      isEditable: true),
+                  _buildInfoRow('Username', usernameController, Icons.person),
+                  _buildInfoRow('ID', idController, Icons.credit_card),
+                  _buildInfoRow('Email', emailController, Icons.email,
+                      isEditable: true),
+                  _buildInfoRow(
+                      'Phone Number', phoneNumberController, Icons.phone,
+                      isEditable: true),
+                  SizedBox(height: 40),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomBackButton(),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_isEditing) {
+                              _saveUserData();
+                            } else {
+                              setState(() => _isEditing = true);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 30, vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          child: Text(
+                            _isEditing ? 'Save' : 'Edit',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
+                      ],
                     ),
-                    OutlinedButton(
-                      onPressed: () => setState(() => _isEditing = false),
-                      child: Text('Cancel'),
-                    ),
-                  ],
-                )
-                    : ElevatedButton(
-                  onPressed: () => setState(() => _isEditing = true),
-                  child: Text('Edit'),
-                ),
-                SizedBox(height: 20),
-
-              ],
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(String label, TextEditingController controller, {bool isEmail = false, bool isPhone = false}) {
-    return TextField(
-      controller: controller,
-      keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
-      style: TextStyle(color: Colors.white), // White text color
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(color: Colors.white), // White label color
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-        ),
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
-        ),
-      ),
-      readOnly: !_isEditing || isEmail || isPhone,
     );
   }
 }

@@ -10,26 +10,39 @@ class InformativeThree extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            margin: EdgeInsets.only(bottom: 15),
+              margin: EdgeInsets.only(bottom: 15),
               child: Image(image: AssetImage('assets/images/gas_it_up.png'))),
           Container(
-            margin: EdgeInsets.only(bottom: 15,left: 30,right: 30),
+            margin: EdgeInsets.only(bottom: 15, left: 30, right: 30),
             width: MediaQuery.of(context).size.width,
             child: ElevatedButton(
-              onPressed: () { Navigator.pushNamed(context, '/login'); },
-              child: Text("Starting here"),
+              onPressed: () {
+                Navigator.pushNamed(context, '/login');
+              },
+              child: Text(
+                "Starting here",
+                style: TextStyle(fontSize: 20),
+              ),
             ),
           ),
           Container(
-              margin: EdgeInsets.only(bottom: 15,left: 30,right: 30),
-              child: Text('Wherever you are, whatever the issue, we are always ready to keep you moving', textAlign: TextAlign.center)),
+              margin: EdgeInsets.only(bottom: 15, left: 30, right: 30),
+              child: Text(
+                'Wherever you are, whatever the issue, we are always ready to keep you moving',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 22),
+              )),
           Container(
-            margin: EdgeInsets.only(left: 30,right: 30),
+            margin: EdgeInsets.only(left: 30, right: 30),
             width: MediaQuery.of(context).size.width,
             child: ElevatedButton(
-
-              onPressed: () { Navigator.pushNamed(context, '/about'); },
-              child: Text("About us"),
+              onPressed: () {
+                Navigator.pushNamed(context, '/about');
+              },
+              child: Text(
+                "About us",
+                style: TextStyle(fontSize: 20),
+              ),
             ),
           ),
         ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InputField extends StatelessWidget {
   final String hintText;
@@ -10,6 +11,7 @@ class InputField extends StatelessWidget {
   final bool readOnly;
   final String? Function(String?)? validator;
   final void Function(String?)? onChanged;
+  final bool lettersOnly;
 
   const InputField({
     Key? key,
@@ -21,7 +23,8 @@ class InputField extends StatelessWidget {
     this.obscureText = false, // Default not obscured
     this.validator,
     this.onChanged,
-    this.readOnly = false
+    this.readOnly = false,
+    this.lettersOnly = false,
   }) : super(key: key);
 
   @override
@@ -43,6 +46,9 @@ class InputField extends StatelessWidget {
               obscureText: obscureText, // Hide text for passwords
               controller: controller,
               validator: validator,
+              inputFormatters: lettersOnly ? [
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
+              ] : null,
               onChanged: (value) {
                 if (onChanged != null) {
                   onChanged!(value); // Call the passed function
@@ -50,7 +56,6 @@ class InputField extends StatelessWidget {
               },
               decoration: InputDecoration(
                 hintText: hintText,
-
                 hintStyle: TextStyle(color: Colors.white), // Hint text styling
                 border: InputBorder.none, // Removes underline
               ),

@@ -10,30 +10,36 @@ class SelectableRadioButton extends StatefulWidget {
 }
 
 class _SelectableRadioButtonState extends State<SelectableRadioButton> {
-
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 12),
       width: 120,
       height: 70,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(30),
       ),
-      child:  Center(
+      child: Center(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
-            children: [
-              if(this.widget.isSelected) Icon(Icons.check,color: Colors.black),
-              Center(
-                child: Text(widget.text,textAlign: TextAlign.center,style: TextStyle(
-                  color: Colors.black ,
-                ),),
+          children: [
+            if(widget.isSelected) ...[
+              Icon(Icons.check, color: Colors.black, size: 20),
+              SizedBox(width: 4),
+            ],
+            Flexible(
+              child: Text(
+                widget.text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-            ]
+            ),
+          ],
         ),
       ),
     );

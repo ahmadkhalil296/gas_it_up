@@ -36,13 +36,17 @@ class _FuelPriceState extends State<FuelPrice> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment:MainAxisAlignment.spaceAround,
           children: [
-            Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image(image: AssetImage('assets/images/fuel_icon_white.png')),
-                  SizedBox(width: 20),
-                  Text('Fuel Delivery',style: Theme.of(context).textTheme.headlineLarge)
-                ]
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(left: 0),
+              child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image(image: AssetImage('assets/images/fuel_icon_white.png')),
+                    SizedBox(width: 20),
+                    Text('Fuel Delivery',style: Theme.of(context).textTheme.headlineLarge)
+                  ]
+              ),
             ),
 
             Column(
@@ -124,7 +128,7 @@ class _FuelPriceState extends State<FuelPrice> {
                           'Fuel Type' : this.widget.fuelType,
                           'Quantity' : quantity.toString() + ' Liters',
                           'Total' : totalPrice,
-                          'user_id': await AuthService.getCurrentUserId()!,
+                          'user_id': await AuthService().getCurrentUserId()!,
                           'created_at' : DateTime.now().toString()
 
                         };

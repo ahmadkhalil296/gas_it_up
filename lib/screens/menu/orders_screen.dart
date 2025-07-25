@@ -23,7 +23,8 @@ class OrdersScreen extends StatelessWidget {
 
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: _firestore.collection('orders') .where("user_id", isEqualTo: user!.uid) // Filter by user ID
+                stream: _firestore.collection('orders')
+                    .where("user_id", isEqualTo: user!.uid)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -36,6 +37,14 @@ class OrdersScreen extends StatelessWidget {
                   var orders = snapshot.data!.docs.map((doc) {
                     return {"id": doc.id, ...doc.data() as Map<String, dynamic>};
                   }).toList();
+
+                  // Sort orders by creation date (newest first)
+                  orders.sort((a, b) {
+                    DateTime dateA = DateTime.parse(a['created_at'] ?? '');
+                    DateTime dateB = DateTime.parse(b['created_at'] ?? '');
+                    return dateB.compareTo(dateA);
+                  });
+
                   return ListView.builder(
                     padding: EdgeInsets.all(10),
                     itemCount: orders.length,
@@ -64,9 +73,10 @@ class OrdersScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Order ID: ${order['id']}", style: TextStyle(color: Colors.grey[600],fontWeight: FontWeight.bold)),
-                              // if (order.containsKey('created_at'))
-                                Text("Date: ${order['created_at'].toString().split(' ')[0]}", style: TextStyle(color: Colors.grey[600])),
+                              Text("Service: ${order['Service'] ?? 'Unknown Service'}", 
+                                  style: TextStyle(color: Colors.grey[600],fontWeight: FontWeight.bold)),
+                              Text("Date: ${order['created_at'].toString().split(' ')[0]}", 
+                                  style: TextStyle(color: Colors.grey[600])),
                             ],
                           ),
                         ),

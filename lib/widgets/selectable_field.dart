@@ -35,12 +35,14 @@ class _SelectableFieldState extends State<SelectableField> {
                     if(this.widget.isSelected) Icon(Icons.check,color: Colors.black),
                     Text(widget.text1,style: TextStyle(
                       color: this.widget.isSelected ? Colors.black : Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),),
                   ]
               ),
               if(widget.text2 != null)
               Text(widget.text2!,style: TextStyle(
                 color: this.widget.isSelected ? Colors.black : Colors.white,
+                fontWeight: FontWeight.bold,
               ),)
             ]
         )

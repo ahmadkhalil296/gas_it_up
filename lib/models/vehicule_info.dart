@@ -2,7 +2,7 @@ class VehicleInfo{
   String? type;
   String? model;
   int? year;
-  int? plateNumber;
+  String? plateNumber;
   String? color;
 
   VehicleInfo.defaultConst();
@@ -20,12 +20,31 @@ class VehicleInfo{
   }
 
   static VehicleInfo fromMap(Map<String, dynamic> map) {
+    // Handle case where vehicleInfo might be missing (for admin accounts)
+    if (map == null) {
+      return VehicleInfo.defaultConst();
+    }
+
+    var plateNum = map['plateNumber'];
+    String plateNumStr = plateNum is int ? plateNum.toString() : (plateNum?.toString() ?? '');
+    
+    // Handle potential null or invalid year values
+    int? yearValue;
+    var yearData = map['year'];
+    if (yearData != null) {
+      if (yearData is int) {
+        yearValue = yearData;
+      } else if (yearData is String) {
+        yearValue = int.tryParse(yearData);
+      }
+    }
+    
     return VehicleInfo(
-      type: map['type'],
-      model: map['model'],
-      year: map['year'],
-      plateNumber: map['plateNumber'],
-      color: map['color'],
+      type: map['type']?.toString() ?? '',
+      model: map['model']?.toString() ?? '',
+      year: yearValue ?? 0,
+      plateNumber: plateNumStr,
+      color: map['color']?.toString() ?? '',
     );
   }
 }

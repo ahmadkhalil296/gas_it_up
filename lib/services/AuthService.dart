@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 import 'local_storage_service.dart';
 
+/// Service class that handles all authentication-related operations
+/// Including sign in, sign up, and user management
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -11,61 +13,121 @@ class AuthService {
   // Sign Up
   Future<User?> signUp(UserModel userModel) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: userModel.email, password: userModel.password);
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: userModel.email,
+        password: userModel.password,
+      );
       User? user = userCredential.user;
 
-      // Store additional user data in Firestore
-      await _firestore.collection('users').doc(user?.uid).set(userModel.toMap());
-      await LocalStorageService().saveUser(userModel);
-
+      if (user != null) {
+        await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .set(userModel.toMap());
+        await LocalStorageService().saveUser(userModel);
+      }
       return user;
     } catch (e) {
-      print("Error: $e");
+      print("Sign Up Error: $e");
       return null;
     }
   }
 
-  // Login
+  /// Signs in a user with their username and password
+  /// First retrieves the user's email from Firestore using their username
+  /// Then attempts to sign in with Firebase Auth
+  /// Returns a UserModel if successful, null otherwise
   Future<UserModel?> signIn(String username, String password) async {
     try {
-      // Get user data from Firestore using username
-      QuerySnapshot userSnapshot = await _firestore
+      // First get the email from Firestore
+      final querySnapshot = await _firestore
           .collection('users')
           .where('username', isEqualTo: username)
-          .limit(1)
           .get();
 
-      if (userSnapshot.docs.isEmpty) {
-        print("User not found");
+      if (querySnapshot.docs.isEmpty) {
+        print("No user found with this username");
         return null;
       }
 
-      var userData = userSnapshot.docs.first.data() as Map<String, dynamic>;
+      final userDoc = querySnapshot.docs.first;
+      final userData = userDoc.data();
+      final email = userData['email'] as String?;
 
-      // Authenticate with Firebase using email and password
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: userData['email'],
+      if (email == null) {
+        print("No email found for this user");
+        return null;
+      }
+
+      // Sign in with email and password
+      final authResult = await _auth.signInWithEmailAndPassword(
+        email: email,
         password: password,
       );
 
-      if (userCredential.user != null) {
-        await LocalStorageService().saveUser(UserModel.fromMap(userData));
-        return UserModel.fromMap(userData);
+      if (authResult.user != null) {
+        // Get the user data again to ensure we have the latest
+        final userDoc = await _firestore
+            .collection('users')
+            .doc(authResult.user!.uid)
+            .get();
+
+        if (userDoc.exists) {
+          final userData = userDoc.data();
+          if (userData != null) {
+            final userModel = UserModel.fromMap(userData);
+            await LocalStorageService().saveUser(userModel);
+            return userModel;
+          }
+        }
       }
+      return null;
     } catch (e) {
       print("Login Error: $e");
+      return null;
     }
-    return null;
   }
 
-  // Logout
+  /// Signs out the current user
+  /// Clears local storage and Firebase auth session
   Future<void> signOut() async {
-    await LocalStorageService().clearUser();
-    await _auth.signOut();
+    try {
+      // Clear all local storage data first
+      await LocalStorageService().clearUser();
+
+      // Sign out from Firebase
+      await _auth.signOut();
+    } catch (e) {
+      print("Error during sign out: $e");
+      rethrow;
+    }
   }
 
-  static String? getCurrentUserId() {
-    User? user = FirebaseAuth.instance.currentUser;
-    return user?.uid; // Returns null if no user is logged in
+  /// Gets the current user's ID from Firebase Auth
+  /// Returns null if no user is signed in
+  String? getCurrentUserId() {
+    return _auth.currentUser?.uid;
+  }
+
+  /// Gets the current user's username from Firestore
+  /// Returns null if no user is signed in or username not found
+  Future<String?> getCurrentUsername() async {
+    try {
+      String? uid = getCurrentUserId();
+      if (uid != null) {
+        DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(uid).get();
+        if (userDoc.exists) {
+          Map<String, dynamic> userData =
+              userDoc.data() as Map<String, dynamic>;
+          return userData['username'] as String?;
+        }
+      }
+      return null;
+    } catch (e) {
+      print("Error getting username: $e");
+      return null;
+    }
   }
 }
